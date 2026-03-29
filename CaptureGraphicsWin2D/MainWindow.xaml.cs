@@ -215,7 +215,7 @@ namespace CaptureGraphicsWin2D
         private void WindowSelector_DropDownOpened(object sender, object evt)
         {
             var selection = new List<string> { SELECT_ALL_WINDOWS };
-            selection.AddRange(GetVisibleWindows().Select(GetWindowName).Order().ToList());
+            selection.AddRange(GetVisibleWindows().Select(GetWindowName).Order().Distinct().ToList());
 
             WindowSelector.ItemsSource = selection;
             WindowSelector.SelectedIndex = 0;
