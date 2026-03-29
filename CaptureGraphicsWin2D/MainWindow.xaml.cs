@@ -1,4 +1,5 @@
 using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using System;
@@ -314,8 +315,37 @@ namespace CaptureGraphicsWin2D
             }
 
             using Direct3D11CaptureFrame capturedFrame = await frameArrivedCompletion.Task;
-            using var bitmap = CanvasBitmap.CreateFromDirect3D11Surface(device, capturedFrame.Surface);
-            await bitmap.SaveAsync(outputPath, CanvasBitmapFileFormat.Png);
+
+            using var renderTarget = new CanvasRenderTarget(device, item.Size.Width, item.Size.Height, SCALE_FACTOR_1);
+
+            using (var ds = renderTarget.CreateDrawingSession())
+            {
+                ds.Clear(Windows.UI.Color.FromArgb(0, 0, 0, 0));
+
+                using var capturedBitmap = CanvasBitmap.CreateFromDirect3D11Surface(device, capturedFrame.Surface);
+
+                // Create a clipping mask with rounded corners
+                float radius = GetWindowCornerRadius(hwnd);
+
+                if (radius > 0)
+                {
+                    // Apply rounded clipping
+                    Windows.Foundation.Rect bounds = new Windows.Foundation.Rect(0, 0, item.Size.Width, item.Size.Height);
+                    using var geometry = CanvasGeometry.CreateRoundedRectangle(device, bounds, radius, radius);
+
+                    using (ds.CreateLayer(1.0f, geometry))
+                    {
+                        ds.DrawImage(capturedBitmap);
+                    }
+                }
+                else
+                {
+                    // Draw normally for square / maximized windows
+                    ds.DrawImage(capturedBitmap);
+                }
+            }
+
+            await renderTarget.SaveAsync(outputPath, CanvasBitmapFileFormat.Png);
 
             session.Dispose();
         }
@@ -357,6 +387,51 @@ namespace CaptureGraphicsWin2D
             StringBuilder sb = new StringBuilder(256);
             GetWindowText(hwnd, sb, sb.Capacity);
             return sb.ToString();
+        }
+
+        private float GetWindowCornerRadius(IntPtr hwnd)
+        {
+            // If the window is maximized, it never has rounded corners
+            if (IsZoomed(hwnd))
+            {
+                return 0f;
+            }
+
+            var cls = GetClassName(hwnd);
+            if (cls == "Progman" || cls == "Shell_TrayWnd")
+            {
+                return 0f;
+            }
+
+            // Ask the DWM what the window prefers
+            DWM_WINDOW_CORNER_PREFERENCE preference;
+            int result = DwmGetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, out preference, Marshal.SizeOf(typeof(int)));
+
+            if (result == 0) // S_OK
+            {
+                switch (preference)
+                {
+                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND:
+                        return 0f; // E.g., older Win32 apps that opted out, or specific tool windows
+                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUNDSMALL:
+                        return GetWindowScaleFactor(hwnd) * 4f; // E.g., Context menus or small popups
+                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND:
+                        return GetWindowScaleFactor(hwnd) * 8f; // Explicitly requested standard rounding
+                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT:
+                        return GetWindowScaleFactor(hwnd) * 8f; // On Windows 11, the default for top-level windows is 8px
+                }
+            }
+
+            // Fallback if the API call fails (safe bet for Windows 11)
+            return 0f;
+        }
+
+        private const float SCALE_FACTOR_1 = 96.0f;
+
+        private float GetWindowScaleFactor(IntPtr hwnd)
+        {
+            // e.g. DPI 144 / 96.0 = 1.5 multiplier
+            return GetDpiForWindow(hwnd) / SCALE_FACTOR_1;
         }
 
         private void OpenFolderAndSelectFiles(string folderPath, List<string> filePaths)
@@ -431,6 +506,32 @@ namespace CaptureGraphicsWin2D
         [DllImport("user32.dll", CharSet = CharSet.Auto)] static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         [DllImport("user32.dll", CharSet = CharSet.Auto)] static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         [DllImport("dwmapi.dll")] static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out int pvAttribute, int cbAttribute);
+
+
+
+        public enum DWMWINDOWATTRIBUTE
+        {
+            DWMWA_WINDOW_CORNER_PREFERENCE = 33
+        }
+
+        public enum DWM_WINDOW_CORNER_PREFERENCE
+        {
+            DWMWCP_DEFAULT = 0,
+            DWMWCP_DONOTROUND = 1,
+            DWMWCP_ROUND = 2,
+            DWMWCP_ROUNDSMALL = 3
+        }
+
+        // Interop methods
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE dwAttribute, out DWM_WINDOW_CORNER_PREFERENCE pvAttribute, int cbAttribute);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsZoomed(IntPtr hWnd); // "Zoomed" is the Win32 term for Maximized
+
+        [DllImport("user32.dll")]
+        public static extern uint GetDpiForWindow(IntPtr hwnd);
 
 
 
