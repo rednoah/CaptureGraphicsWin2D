@@ -1,0 +1,59 @@
+<Window
+    x:Class="CaptureGraphicsWin2D.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="CaptureGraphicsWin2D">
+
+    <Grid RowSpacing="0" Padding="24" RequestedTheme="Dark" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="32">
+            <Grid RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Output Folder:" FontWeight="SemiBold" />
+                <Grid Grid.Row="1" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="OutputFolderTextBox" Grid.Column="0" IsReadOnly="True" PlaceholderText="Select a folder..." HorizontalAlignment="Stretch" />
+                    <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse" Click="BrowseButton_Click"/>
+                </Grid>
+            </Grid>
+
+            <Grid RowSpacing="8" ColumnSpacing="24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Capture Window:" Grid.Row="0" Grid.Column="0" FontWeight="SemiBold" />
+                <ComboBox x:Name="WindowSelector" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DropDownOpened="WindowSelector_DropDownOpened" />
+                <TextBlock Text="Countdown:" Grid.Row="0" Grid.Column="1" FontWeight="SemiBold" />
+                <NumberBox x:Name="CountdownNumberBox" Grid.Row="1" Grid.Column="1" Value="3" Minimum="0" Maximum="60" SpinButtonPlacementMode="Inline" HorizontalAlignment="Stretch" />
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="StartButton" Content="Start Capture" Style="{ThemeResource AccentButtonStyle}" Click="StartButton_Click" />
+                <Button x:Name="StopButton" Content="Cancel" IsEnabled="False" Click="StopButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Padding="12" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <ProgressRing x:Name="StatusProgressRing" IsActive="False" Visibility="Collapsed" Width="20" Height="20"/>
+                <TextBlock x:Name="StatusTextBlock" Text="Status: Idle" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>

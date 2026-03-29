@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+		<RootNamespace>CaptureTool</RootNamespace>
+		<Platforms>x64;ARM64</Platforms>
+		<RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+
+		<WindowsPackageType>None</WindowsPackageType>
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+
+		<UseWinUI>true</UseWinUI>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>enable</Nullable>
+
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<PublishTrimmed>false</PublishTrimmed>
+		<DisableRuntimeMarshalling>false</DisableRuntimeMarshalling>
+		<EnableMsixTooling>true</EnableMsixTooling>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+	<!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+
+  <!-- Publish Properties -->
+  <PropertyGroup>
+    <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
+    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
+    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <PackageIcon></PackageIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CaptureGraphicsWin2D": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}
