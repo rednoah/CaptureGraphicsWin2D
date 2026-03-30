@@ -10,4 +10,10 @@
     <Platform Solution="*|x86" Project="x86" />
     <Deploy />
   </Project>
+  <Project Path="UWPCaptureGraphicsWin2D/UWPCaptureGraphicsWin2D.csproj" Id="ca5af0bb-9210-4e6f-b8e2-dc800e4ba3e3">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
 </Solution>
