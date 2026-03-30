@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaptureGraphicsWin2D - Perfect Windows 11 Screenshots</title>
+    <meta name="description" content="A simple screenshot tool for Windows 11 that uses the Microsoft.Graphics.Win2D API to capture windows with alpha channel and save them as PNG.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        div.transparent {
+            background-repeat: repeat;
+            background-position: 0px 0px;
+            background-size: 12px;
+        }
+
+        div.transparent.light {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjgiIGhlaWdodD0iOCIgZmlsbD0iI2VlZSIvPjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNlZWUiLz48L3N2Zz4=');
+        }
+
+        div.transparent.dark {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjMzgzODM4Ii8+PHJlY3Qgd2lkdGg9IjgiIGhlaWdodD0iOCIgZmlsbD0iIzRjNGM0YyIvPjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiM0YzRjNGMiLz48L3N2Zz4=');
+        }
+
+        div.transparent img {
+            box-sizing: content-box;
+            margin: 35px 30px;
+            padding: 0px 0px;
+            display: inline;
+        }
+
+        header div.transparent img.capture {
+            margin-right: 15px;
+            margin-left: 15px;
+            border: 4px solid #4CFF00;
+            animation: capture-screenshot 2s infinite alternate both;
+        }
+
+        @keyframes capture-screenshot {
+            0%, 93% {
+                border-color: transparent;
+            }
+            94%, 100% {
+                border-color: #4CFF00;
+            }
+        }
+
+        header div.transparent {
+            max-width: 1250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media screen and (max-width: 900px) {
+            header div.transparent img:nth-child(2) {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 1300px) {
+            header div.transparent img:nth-child(3) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-50 font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+    <nav class="fixed w-full z-50 glass border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="font-bold text-xl tracking-tight">CaptureGraphicsWin2D</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/rednoah/CaptureGraphicsWin2D" target="_blank" class="text-slate-300 hover:text-white transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                        <span class="hidden sm:inline">Star on GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 blur-[100px] rounded-full"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Capture Windows with <br class="hidden sm:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Perfect Transparency</span>
+            </h1>
+            <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto mb-10">
+                A simple, powerful screenshot tool for Windows 11. Built with the <code class="bg-slate-800 px-2 py-1 rounded text-sm text-blue-300">Microsoft.Graphics.Win2D</code> API to capture windows with alpha channels and save them as flawless PNGs.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_x64.zip" class="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download for x64
+                </a>
+                <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_arm64.zip" class="w-full sm:w-auto px-8 py-3.5 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg transition flex items-center justify-center gap-2 border border-slate-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download for ARM64
+                </a>
+            </div>
+
+            <div class="light transparent mt-16 rounded-xl relative mx-auto">
+                <img style="width: 430px" class="main" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/Assets/CaptureGraphicsWin2D.png">
+                <img style="width: 287px" class="capture" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/Assets/ContextMenu-1.png">
+                <img style="width: 300px" class="capture" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/Assets/ContextMenu-2.png">
+            </div>
+        </div>
+    </header>
+
+    <section class="py-20 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold">Why CaptureGraphicsWin2D?</h2>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Standard screenshot tools strip away the alpha channel, leaving ugly black or white backgrounds on curved UI elements. We fix that.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-2xl">
+                    <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Rounded Borders</h3>
+                    <p class="text-slate-400">Perfectly cuts out the corners of Windows 11 native windows, maintaining the soft curve without artifacts.</p>
+                </div>
+
+                <div class="glass p-8 rounded-2xl">
+                    <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Native Shadows</h3>
+                    <p class="text-slate-400">Captures the beautiful drop shadows of context menus and pop-ups exactly as they appear on screen.</p>
+                </div>
+
+                <div class="glass p-8 rounded-2xl">
+                    <div class="w-12 h-12 bg-cyan-500/20 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Transparent Surfaces</h3>
+                    <p class="text-slate-400">Preserves the opacity of elements like the Windows Taskbar, Mica materials, and acrylic blur surfaces.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-slate-900 border-t border-slate-800 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">See The Difference</h2>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Captured seamlessly with transparency enabled. Notice the smooth corners and native shadows.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
+                <div class="space-y-6">
+                    <div class="light transparent p-4 rounded-xl flex justify-center">
+                        <img style="width: 287px" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/Assets/ContextMenu-1.png" alt="Light Context Menu" class="max-w-xs drop-shadow-2xl">
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="dark transparent p-4 rounded-xl flex justify-center">
+                        <img style="width: 287px" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/Assets/ContextMenu-1.Dark.png" alt="Dark Context Menu" class="max-w-xs drop-shadow-2xl">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2 text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                <span>&copy; CaptureGraphicsWin2D. Released under the <a href="https://github.com/rednoah/CaptureGraphicsWin2D/blob/main/LICENSE" class="text-blue-400 hover:underline">MIT License</a>.</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="https://github.com/rednoah/CaptureGraphicsWin2D" class="text-slate-400 hover:text-white transition">GitHub Repository</a>
+                <a href="https://github.com/rednoah/CaptureGraphicsWin2D/issues" class="text-slate-400 hover:text-white transition">Report an Issue</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
