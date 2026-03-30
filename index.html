@@ -35,7 +35,7 @@
             display: inline;
         }
 
-        header div.transparent img.capture {
+        div.transparent img.capture {
             margin-right: 15px;
             margin-left: 15px;
             border: 4px solid #4CFF00;
@@ -51,8 +51,9 @@
             }
         }
 
-        header div.transparent {
+        div.transparent {
             max-width: 1250px;
+            min-height: 450px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -101,7 +102,7 @@
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Perfect Transparency</span>
             </h1>
             <p class="mt-4 text-xl text-slate-300 max-w-4xl mx-auto mb-10">
-                A simple, powerful screenshot tool for Windows 11. Built with the <code class="bg-slate-800 px-2 py-1 rounded text-sm text-blue-300">Microsoft.Graphics.Win2D</code> API to capture windows with alpha channels and save them as flawless PNGs.
+                A simple, powerful screenshot tool for Windows 11. Built with the <code class="bg-slate-800 px-2 py-1 rounded text-sm text-blue-300">Microsoft.Graphics.Win2D</code> API to capture windows with alpha channel and save them as PNG image files with transparency.
             </p>
 
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
@@ -127,7 +128,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold">Why CaptureGraphicsWin2D?</h2>
-                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Standard screenshot tools strip away the alpha channel, leaving ugly black or white backgrounds on curved UI elements. We fix that.</p>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Standard screenshot tools capture the screen rather than the window itself, losing the alpha channel along the away and flattening the background layer into the captured image. Modern Windows 11 can do better.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -162,7 +163,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold">See The Difference</h2>
-                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Captured seamlessly with transparency enabled. Notice the smooth corners and native shadows.</p>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">Captured seamlessly with transparency. Notice the smooth corners and native shadows.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
