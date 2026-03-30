@@ -19,6 +19,9 @@
 		<DisableRuntimeMarshalling>false</DisableRuntimeMarshalling>
 		<EnableMsixTooling>true</EnableMsixTooling>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Content Include="icon.ico" />
+	</ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -60,6 +63,7 @@
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <PackageIcon></PackageIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Optimize>True</Optimize>

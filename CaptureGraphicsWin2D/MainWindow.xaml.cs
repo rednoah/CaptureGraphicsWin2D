@@ -48,6 +48,20 @@ namespace CaptureGraphicsWin2D
             }
 
 
+            try
+            {
+                // extract the very first icon (index 0) from our exe file
+                IntPtr hIcon = ExtractIcon(IntPtr.Zero, System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, 0);
+                if (hIcon != IntPtr.Zero)
+                {
+                    appWindow.SetIcon(Microsoft.UI.Win32Interop.GetIconIdFromIcon(hIcon));
+                }
+            }
+            catch(Exception e) {
+                System.Diagnostics.Trace.WriteLine(e);
+            }
+
+
             // Shrink window size to fit the simple controls
             // The Window itself doesn't have a 'Loaded' event, 
             // so we use the root element of your content
@@ -483,7 +497,8 @@ namespace CaptureGraphicsWin2D
         }
 
 
-
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern int SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string pszName, IntPtr pbc, out IntPtr ppidl, uint sfgaoIn, out uint psfgaoOut);
