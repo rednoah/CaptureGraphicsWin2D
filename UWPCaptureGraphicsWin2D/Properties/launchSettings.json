@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "UWPCaptureGraphicsWin2D (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "UWPCaptureGraphicsWin2D (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
