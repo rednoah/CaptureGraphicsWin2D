@@ -15,6 +15,7 @@
   <Properties>
     <DisplayName>CaptureGraphicsWin2D</DisplayName>
     <PublisherDisplayName>Point Planck Limited</PublisherDisplayName>
+	<Description>A simple screenshot tool</Description>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,7 +33,7 @@
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="CaptureGraphicsWin2D"
-        Description="CaptureGraphicsWin2D"
+        Description="A simple screenshot tool"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
