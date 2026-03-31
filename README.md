@@ -7,14 +7,21 @@ This allows you to correctly **capture windows with transparency**:
 * windows with shadows (e.g. context menu)
 * windows with transparent surfaces (e.g. taskbar)
 
-Download:
-* [CaptureGraphicsWin2D 1.0 for x64](https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_x64.zip)
-* [CaptureGraphicsWin2D 1.0 for ARM64](https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_arm64.zip)
+<img src="Assets/CaptureGraphicsWin2D.png" width="430">
 
 Video:
 * [Screenshot Tool for Windows 11 - CaptureGraphicsWin2D - YouTube](https://www.youtube.com/watch?v=aWMvMo0-vAs)
 
-<img src="Assets/CaptureGraphicsWin2D.png" width="430">
+Links:
+* [Website](https://rednoah.github.io/CaptureGraphicsWin2D/)
+* [Microsoft Store](https://apps.microsoft.com/detail/9nf3pwrd277v)
+
+Download:
+* [CaptureGraphicsWin2D 1.0 for x64](https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_x64.zip)
+* [CaptureGraphicsWin2D 1.0 for ARM64](https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_arm64.zip)
+
+
+
 
 
 
