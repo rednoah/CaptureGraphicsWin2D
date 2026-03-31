@@ -1,11 +1,8 @@
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Geometry;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -15,7 +12,6 @@ using System.Threading.Tasks;
 using Windows.Graphics.Capture;
 using Windows.Graphics.DirectX;
 using Windows.Storage.Pickers;
-using WinRT;
 
 namespace UWPCaptureGraphicsWin2D
 {
