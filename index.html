@@ -79,7 +79,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-2">
-                    <img class="w-6 h-6" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/CaptureGraphicsWin2D/icon.svg">
+                    <img class="w-6 h-6" src="https://raw.githubusercontent.com/rednoah/CaptureGraphicsWin2D/main/CaptureGraphicsWin2D/icon.svg" alt="App Icon">
                     <span class="font-bold text-xl tracking-tight">CaptureGraphicsWin2D</span>
                 </div>
                 <div class="flex items-center gap-4">
@@ -106,15 +106,26 @@
                 A simple, powerful screenshot tool for Windows 11. Built with the <code class="bg-slate-800 px-2 py-1 rounded text-sm text-blue-300">Microsoft.Graphics.Win2D</code> API to capture windows with alpha channel and save them as PNG image files with transparency.
             </p>
 
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_x64.zip" class="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download for x64
+            <div class="flex flex-col items-center gap-4">
+
+                <a href="ms-windows-store://pdp/?productid=9NF3PWRD277V" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-3 text-lg border border-blue-400/30">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z" /></svg>
+                    Get it from the Microsoft Store
                 </a>
-                <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_arm64.zip" class="w-full sm:w-auto px-8 py-3.5 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg shadow-lg transition flex items-center justify-center gap-2 border border-slate-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download for ARM64
-                </a>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 mt-3">
+                    <div class="flex items-center gap-3">
+                        <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_x64.zip" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-lg shadow transition flex items-center gap-2 border border-slate-700">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download for x64
+                        </a>
+                        <a href="https://github.com/rednoah/CaptureGraphicsWin2D/releases/download/1.0/CaptureGraphicsWin2D_arm64.zip" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-lg shadow transition flex items-center gap-2 border border-slate-700">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download for ARM64
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             <div class="light transparent mt-16 rounded-xl relative mx-auto">
