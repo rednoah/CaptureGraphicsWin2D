@@ -428,6 +428,9 @@ namespace UWPCaptureGraphicsWin2D
             return sb.ToString();
         }
 
+        private const string HWND_CLS_DESKTOP = "Progman";
+        private const string HWND_CLS_TASKBAR = "Shell_TrayWnd";
+
         private float GetWindowCornerRadius(IntPtr hwnd)
         {
             // If the window is maximized, it never has rounded corners
@@ -437,7 +440,7 @@ namespace UWPCaptureGraphicsWin2D
             }
 
             var cls = GetClassName(hwnd);
-            if (cls == "Progman" || cls == "Shell_TrayWnd")
+            if (cls == HWND_CLS_DESKTOP || cls == HWND_CLS_TASKBAR)
             {
                 return 0f;
             }
