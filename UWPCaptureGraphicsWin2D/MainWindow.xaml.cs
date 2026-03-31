@@ -56,8 +56,7 @@ namespace UWPCaptureGraphicsWin2D
             }
 
             // Set default folder
-            string defaultDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Captures");
-            OutputFolderTextBox.Text = defaultDir;
+            OutputFolderTextBox.Text = GetDefaultFolder();
 
             // Set default selected window
             WindowSelector.ItemsSource = new List<string> { SELECT_ALL_WINDOWS };
@@ -70,6 +69,51 @@ namespace UWPCaptureGraphicsWin2D
                 Environment.Exit(0);
             };
         }
+
+
+        public async void ProcessCommandLine(string[] args)
+        {
+            try
+            {
+                AttachConsole(ATTACH_PARENT_PROCESS);
+
+                List<string> targetWindow = new List<string> { SELECT_ALL_WINDOWS };
+                string outputDir = GetDefaultFolder();
+
+                // args[1] = output folder
+                if (args.Length > 1)
+                {
+                    outputDir = args[1];
+                }
+
+                // args[2..n] = window names
+                if (args.Length > 2)
+                {
+                    targetWindow = args.Skip(2).ToList();
+                }
+
+                foreach (var win in targetWindow)
+                {
+                    var capturedFiles = await CaptureAllVisibleWindowsAsync(win, outputDir);
+                    capturedFiles.ForEach(Console.WriteLine);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e);
+            }
+            finally
+            {
+                Environment.Exit(0);
+            }
+        }
+
+
+        private string GetDefaultFolder()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Captures");
+        }
+
 
         private void Pack()
         {
@@ -254,7 +298,6 @@ namespace UWPCaptureGraphicsWin2D
 
                 try
                 {
-                    Console.WriteLine(path);
                     await CaptureWindowAlphaAsync(win.Hwnd, path);
 
                     if (file.Exists)
@@ -371,7 +414,7 @@ namespace UWPCaptureGraphicsWin2D
         private bool IsWindowCloaked(IntPtr hwnd)
         {
             int cloaked = 0;
-            DwmGetWindowAttribute(hwnd, 14, out cloaked, sizeof(int));
+            DwmGetWindowAttribute(hwnd, DWMWA_CLOAKED, out cloaked, sizeof(int));
             return cloaked != 0;
         }
 
@@ -404,20 +447,20 @@ namespace UWPCaptureGraphicsWin2D
             }
 
             // Ask the DWM what the window prefers
-            DWM_WINDOW_CORNER_PREFERENCE preference;
-            int result = DwmGetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, out preference, Marshal.SizeOf(typeof(int)));
+            int windowCornerPreference;
+            int result = DwmGetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, out windowCornerPreference, Marshal.SizeOf(typeof(int)));
 
             if (result == 0) // S_OK
             {
-                switch (preference)
+                switch (windowCornerPreference)
                 {
-                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND:
+                    case DWMWCP_DONOTROUND:
                         return 0f; // E.g., older Win32 apps that opted out, or specific tool windows
-                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUNDSMALL:
+                    case DWMWCP_ROUNDSMALL:
                         return GetWindowScaleFactor(hwnd) * 4f; // E.g., Context menus or small popups
-                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND:
+                    case DWMWCP_ROUND:
                         return GetWindowScaleFactor(hwnd) * 8f; // Explicitly requested standard rounding
-                    case DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT:
+                    case DWMWCP_DEFAULT:
                         return GetWindowScaleFactor(hwnd) * 8f; // On Windows 11, the default for top-level windows is 8px
                 }
             }
@@ -483,8 +526,18 @@ namespace UWPCaptureGraphicsWin2D
         }
 
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
+
+
+        public const int ATTACH_PARENT_PROCESS = -1;
+
+        [DllImport("kernel32.dll")]
+        static extern bool AttachConsole(int dwProcessId);
+
+        [DllImport("kernel32.dll")]
+        static extern bool FreeConsole();
+
+
+
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern int SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string pszName, IntPtr pbc, out IntPtr ppidl, uint sfgaoIn, out uint psfgaoOut);
@@ -504,28 +557,23 @@ namespace UWPCaptureGraphicsWin2D
         delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
         [DllImport("user32.dll")] static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
         [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hWnd);
-        [DllImport("user32.dll", CharSet = CharSet.Auto)] static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-        [DllImport("user32.dll", CharSet = CharSet.Auto)] static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-        [DllImport("dwmapi.dll")] static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out int pvAttribute, int cbAttribute);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
 
 
-        public enum DWMWINDOWATTRIBUTE
-        {
-            DWMWA_WINDOW_CORNER_PREFERENCE = 33
-        }
 
-        public enum DWM_WINDOW_CORNER_PREFERENCE
-        {
-            DWMWCP_DEFAULT = 0,
-            DWMWCP_DONOTROUND = 1,
-            DWMWCP_ROUND = 2,
-            DWMWCP_ROUNDSMALL = 3
-        }
+        public const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+        public const int DWMWA_CLOAKED = 14;
+
+        public const int DWMWCP_DEFAULT = 0;
+        public const int DWMWCP_DONOTROUND = 1;
+        public const int DWMWCP_ROUND = 2;
+        public const int DWMWCP_ROUNDSMALL = 3;
 
         // Interop methods
         [DllImport("dwmapi.dll")]
-        public static extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE dwAttribute, out DWM_WINDOW_CORNER_PREFERENCE pvAttribute, int cbAttribute);
+        public static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out int pvAttribute, int cbAttribute);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
