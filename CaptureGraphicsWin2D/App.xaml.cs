@@ -26,7 +26,7 @@ namespace CaptureGraphicsWin2D
     /// </summary>
     public partial class App : Application
     {
-        private Window? _window;
+        private MainWindow? _window;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -44,7 +44,18 @@ namespace CaptureGraphicsWin2D
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             _window = new MainWindow();
-            _window.Activate();
+
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                // CLI usage
+                _window.AppWindow.Hide();
+                _window.ProcessCommandLine(Environment.GetCommandLineArgs());
+            }
+            else
+            {
+                // GUI usage
+                _window.Activate();
+            }
         }
     }
 }
