@@ -3,7 +3,7 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-		<RootNamespace>CaptureTool</RootNamespace>
+		<RootNamespace>CaptureGraphicsWin2D</RootNamespace>
 		<Platforms>x64;ARM64</Platforms>
 		<RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 
@@ -59,6 +59,11 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <PackageProjectUrl>https://github.com/rednoah/CaptureGraphicsWin2D</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/rednoah/CaptureGraphicsWin2D</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <FileVersion>1.0.6.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Optimize>True</Optimize>
