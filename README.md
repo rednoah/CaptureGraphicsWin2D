@@ -40,3 +40,9 @@ I was not able to find a screenshot tool that was able to capture the Windows 11
 
 <img src="Assets/ContextMenu-1.Dark.png" width="287"><img src="Assets/ContextMenu-2.Dark.png" width="300">
 <img src="Assets/ShellTray.Dark.png" width="1920">
+
+
+
+
+# Privacy Policy
+`CaptureGraphicsWin2D` is a simple screenshot tool. It does not collect personal information. It does not even connect to the internet in the first place. The Microsoft Store requires a privacy policy for all applications that run with `<rescap:Capability Name="runFullTrust" />`.
