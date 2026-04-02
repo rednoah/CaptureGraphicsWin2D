@@ -10,7 +10,7 @@
 	<Identity
 	  Name="PointPlanck.CaptureGraphics"
 	  Publisher="CN=761A0D2B-9B86-4FE4-B664-18E4E0AFC3F1"
-	  Version="1.0.5.0" />
+	  Version="1.0.6.0" />
 
 	<Properties>
 		<DisplayName>CaptureGraphicsWin2D</DisplayName>
