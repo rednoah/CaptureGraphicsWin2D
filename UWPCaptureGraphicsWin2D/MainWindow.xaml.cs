@@ -43,6 +43,9 @@ namespace UWPCaptureGraphicsWin2D
                 titleBar.IconShowOptions = Microsoft.UI.Windowing.IconShowOptions.HideIconAndSystemMenu;
             }
 
+            // Initialize with the expected size (at Scale Factor 1 so the size will increase on Scale Factor 2)
+            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(430, 380));
+
             // Shrink window size to fit the simple controls
             // The Window itself doesn't have a 'Loaded' event, 
             // so we use the root element of your content
