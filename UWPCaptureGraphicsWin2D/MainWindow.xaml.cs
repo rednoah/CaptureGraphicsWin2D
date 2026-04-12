@@ -67,6 +67,9 @@ namespace UWPCaptureGraphicsWin2D
                 CancelCapture();
                 Environment.Exit(0);
             };
+
+            // Use exe icon as application icon
+            setAppIcon();
         }
 
 
@@ -628,6 +631,29 @@ namespace UWPCaptureGraphicsWin2D
             {
                 if (factoryPtr != IntPtr.Zero) Marshal.Release(factoryPtr);
                 if (hstring != IntPtr.Zero) WindowsDeleteString(hstring);
+            }
+        }
+
+
+
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
+
+        public void setAppIcon()
+        {
+            try
+            {
+                // extract the very first icon (index 0) from our exe file
+                IntPtr hIcon = ExtractIcon(IntPtr.Zero, System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, 0);
+                if (hIcon != IntPtr.Zero)
+                {
+                    this.AppWindow.SetIcon(Microsoft.UI.Win32Interop.GetIconIdFromIcon(hIcon));
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e);
             }
         }
 
