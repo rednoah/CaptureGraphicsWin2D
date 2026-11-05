@@ -13,8 +13,8 @@ Video:
 * [Screenshot Tool for Windows 11 - CaptureGraphicsWin2D - YouTube](https://www.youtube.com/watch?v=aWMvMo0-vAs)
 
 Links:
-* [Product Page](https://rednoah.github.io/CaptureGraphicsWin2D/)
 * [Microsoft Store](https://apps.microsoft.com/detail/9nf3pwrd277v)
+* [Product Page](https://rednoah.github.io/CaptureGraphicsWin2D/)
 
 
 
