@@ -40,6 +40,9 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\**\*.cs" LinkBase="Shared" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

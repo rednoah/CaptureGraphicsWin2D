@@ -28,6 +28,10 @@ e.g. capture a given window
 ```bash
 CaptureGraphicsWin2D "C:\Captures" "Shell_TrayWnd"
 ```
+e.g. keep existing files and write `Shell_TrayWnd-2.png` etc. instead of overwriting them
+```bash
+CaptureGraphicsWin2D --no-overwrite "C:\Captures" "Shell_TrayWnd"
+```
 
 
 
