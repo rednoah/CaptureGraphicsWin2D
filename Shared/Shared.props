@@ -1,0 +1,29 @@
+<Project>
+  <!--
+    Everything that is the same for the classic build (CaptureGraphicsWin2D) and the UWP / Microsoft Store build (UWPCaptureGraphicsWin2D).
+    The two projects only differ in how the application is packaged and published.
+  -->
+  <PropertyGroup>
+    <RootNamespace>CaptureGraphicsWin2D</RootNamespace>
+    <ApplicationManifest>$(MSBuildThisFileDirectory)app.manifest</ApplicationManifest>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <!--
+    The files are not in the project folder, so they must be included explicitly.
+    The Link is the path where the file appears in the project (the XAML compiler needs this to generate ms-appx:///MainWindow.xaml and not a path outside of the project).
+  -->
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml" Link="App.xaml" Generator="MSBuild:Compile" XamlRuntime="$(DefaultXamlRuntime)" />
+    <Page Include="$(MSBuildThisFileDirectory)*.xaml" Exclude="$(MSBuildThisFileDirectory)App.xaml" Link="%(Filename)%(Extension)" Generator="MSBuild:Compile" XamlRuntime="$(DefaultXamlRuntime)" />
+    <Compile Include="$(MSBuildThisFileDirectory)*.cs" Link="%(Filename)%(Extension)" />
+    <Content Include="$(MSBuildThisFileDirectory)icon.ico" Link="icon.ico" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+  </ItemGroup>
+</Project>

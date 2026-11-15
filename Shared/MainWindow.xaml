@@ -20,6 +20,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Output Folder:" FontWeight="SemiBold" />
                 <Grid Grid.Row="1" ColumnSpacing="8">
@@ -30,6 +31,7 @@
                     <TextBox x:Name="OutputFolderTextBox" Grid.Column="0" IsReadOnly="True" PlaceholderText="Select a folder..." HorizontalAlignment="Stretch" />
                     <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse" Click="BrowseButton_Click"/>
                 </Grid>
+                <CheckBox x:Name="OverwriteCheckBox" Grid.Row="2" Content="Overwrite existing files" IsChecked="True" ToolTipService.ToolTip="If not checked, then a number is added to the file name if the file already exists (e.g. Name-2.png)" />
             </Grid>
 
             <Grid RowSpacing="8" ColumnSpacing="24">
@@ -42,7 +44,30 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Capture Window:" Grid.Row="0" Grid.Column="0" FontWeight="SemiBold" />
-                <ComboBox x:Name="WindowSelector" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DropDownOpened="WindowSelector_DropDownOpened" />
+                <Grid Grid.Row="1" Grid.Column="0" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="WindowSelector" Grid.Column="0" HorizontalAlignment="Stretch" DropDownOpened="WindowSelector_DropDownOpened">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:WindowItem">
+                                <Grid ColumnSpacing="8" ToolTipService.ToolTip="{x:Bind Description}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Source="{x:Bind Icon}" Width="16" Height="16" VerticalAlignment="Center" />
+                                    <FontIcon Grid.Column="0" Glyph="{x:Bind Glyph}" Width="16" Height="16" FontSize="16" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Name}" MaxWidth="320" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <local:WindowPickerButton x:Name="WindowPicker" Grid.Column="1" Style="{StaticResource DefaultButtonStyle}" VerticalAlignment="Stretch" Padding="8,0" ToolTipService.ToolTip="Drag the cursor onto a window to select it">
+                        <FontIcon Glyph="&#xeda4;" FontSize="16" />
+                    </local:WindowPickerButton>
+                </Grid>
                 <TextBlock Text="Countdown:" Grid.Row="0" Grid.Column="1" FontWeight="SemiBold" />
                 <NumberBox x:Name="CountdownNumberBox" Grid.Row="1" Grid.Column="1" Value="3" Minimum="0" Maximum="60" SpinButtonPlacementMode="Inline" HorizontalAlignment="Stretch" />
             </Grid>
@@ -54,10 +79,14 @@
         </StackPanel>
 
         <Border Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Padding="12" HorizontalAlignment="Stretch">
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <ProgressRing x:Name="StatusProgressRing" IsActive="False" Visibility="Collapsed" Width="20" Height="20"/>
-                <TextBlock x:Name="StatusTextBlock" Text="Status: Idle" VerticalAlignment="Center" />
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="StatusProgressRing" Grid.Column="0" IsActive="False" Visibility="Collapsed" Width="20" Height="20" Margin="0,0,12,0"/>
+                <TextBlock x:Name="StatusTextBlock" Grid.Column="1" Text="Status: Idle" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+            </Grid>
         </Border>
     </Grid>
 
