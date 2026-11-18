@@ -147,6 +147,73 @@ namespace CaptureGraphicsWin2D
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
+        [DllImport("gdi32.dll")]
+        public static extern int GetDIBits(IntPtr hdc, IntPtr hbm, uint start, uint cLines, [Out] byte[] lpvBits, ref BITMAPINFOHEADER lpbmi, uint usage);
+
+
+        // --- APP ICONS (for UWP apps and other packaged apps) ---
+
+        public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+        public const int APPLICATION_USER_MODEL_ID_MAX_LENGTH = 130;
+        public const ushort VT_LPWSTR = 31;
+        public const uint SIIGBF_ICONONLY = 0x4;
+
+        public static readonly Guid IID_IPropertyStore = new Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99");
+        public static readonly Guid IID_IShellItemImageFactory = new Guid("BCC18B79-BA16-442F-80C4-8A59C30C463B");
+
+        // System.AppUserModel.ID
+        public static readonly PROPERTYKEY PKEY_AppUserModel_ID = new PROPERTYKEY { fmtid = new Guid("9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3"), pid = 5 };
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PROPERTYKEY { public Guid fmtid; public uint pid; }
+
+        // Only string values are read, so only the string pointer of the value union is declared
+        [StructLayout(LayoutKind.Sequential)]
+        public struct PROPVARIANT
+        {
+            public ushort vt;
+            public ushort wReserved1, wReserved2, wReserved3;
+            public IntPtr pwszVal;
+            public IntPtr padding; // the value union is the size of two pointers
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SIZE { public int cx; public int cy; }
+
+        [ComImport, Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IPropertyStore
+        {
+            [PreserveSig] int GetCount(out uint cProps);
+            [PreserveSig] int GetAt(uint iProp, out PROPERTYKEY pkey);
+            [PreserveSig] int GetValue(ref PROPERTYKEY key, out PROPVARIANT pv);
+            [PreserveSig] int SetValue(ref PROPERTYKEY key, ref PROPVARIANT propvar);
+            [PreserveSig] int Commit();
+        }
+
+        [ComImport, Guid("BCC18B79-BA16-442F-80C4-8A59C30C463B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IShellItemImageFactory
+        {
+            [PreserveSig] int GetImage(SIZE size, uint flags, out IntPtr phbm);
+        }
+
+        [DllImport("shell32.dll")]
+        public static extern int SHGetPropertyStoreForWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IPropertyStore ppv);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHCreateItemFromParsingName(string pszPath, IntPtr pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItemImageFactory ppv);
+
+        [DllImport("ole32.dll")]
+        public static extern int PropVariantClear(ref PROPVARIANT pvar);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetApplicationUserModelId(IntPtr hProcess, ref uint applicationUserModelIdLength, StringBuilder applicationUserModelId);
+
 
         // --- HIGHLIGHT FRAME WINDOW ---
 
