@@ -52,18 +52,10 @@ namespace CaptureGraphicsWin2D
 
             var appWindow = this.AppWindow;
 
-            // Force Title Bar to match Dark Theme Background perfectly
+            // Dark title bar to match the dark content.
             if (Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported())
             {
-                var titleBar = appWindow.TitleBar;
-                // #202020 is the exact background color of WinUI 3 Dark Mode
-                var darkBg = Windows.UI.Color.FromArgb(255, 32, 32, 32);
-                titleBar.BackgroundColor = darkBg;
-                titleBar.ButtonBackgroundColor = darkBg;
-                titleBar.ButtonForegroundColor = Microsoft.UI.Colors.White;
-                titleBar.InactiveBackgroundColor = darkBg;
-                titleBar.ButtonInactiveBackgroundColor = darkBg;
-                titleBar.ButtonInactiveForegroundColor = Microsoft.UI.Colors.Gray;
+                this.AppWindow.TitleBar.PreferredTheme = Microsoft.UI.Windowing.TitleBarTheme.Dark;
             }
 
             // Initialize with the expected size (at Scale Factor 1 so the size will increase on Scale Factor 2)
