@@ -29,7 +29,6 @@ namespace CaptureGraphicsWin2D
             try
             {
                 byte[] pixels = GetIconPixels(hwnd);
-                MakeOpaqueIfNoAlphaChannel(pixels);
 
                 var bitmap = new WriteableBitmap(ICON_SIZE, ICON_SIZE);
                 using (Stream stream = bitmap.PixelBuffer.AsStream())
@@ -51,12 +50,19 @@ namespace CaptureGraphicsWin2D
         {
             // 1. Ask the window
             IntPtr hIcon = GetWindowIcon(hwnd);
+
+            // 2. Use the icon of the window class (e.g. Google Chrome)
+            if (hIcon == IntPtr.Zero)
+            {
+                hIcon = GetClassIcon(hwnd);
+            }
+
             if (hIcon != IntPtr.Zero)
             {
                 return DrawIcon(hIcon);
             }
 
-            // 2. Use the icon of the app (e.g. windows of UWP apps have no icon, because the icon is part of the app package)
+            // 3. Use the icon of the app (e.g. windows of UWP apps have neither, because the icon is part of the app package)
             string? appUserModelId = GetAppUserModelId(hwnd);
             byte[]? appIcon = appUserModelId != null ? GetAppIcon(appUserModelId) : null;
             if (appIcon != null)
@@ -64,8 +70,8 @@ namespace CaptureGraphicsWin2D
                 return appIcon;
             }
 
-            // 3. Use the icon of the window class, or else the generic application icon
-            return DrawIcon(GetClassIcon(hwnd));
+            // 4. Use the generic application icon (e.g. context menus and most windows of the shell have no icon)
+            return DrawIcon(LoadIcon(IntPtr.Zero, (IntPtr)IDI_APPLICATION));
         }
 
         // The icon handle belongs to the other application and must not be destroyed by us
@@ -85,7 +91,7 @@ namespace CaptureGraphicsWin2D
             return IntPtr.Zero;
         }
 
-        // The icon handle belongs to the other application (or to the system) and must not be destroyed by us
+        // The icon handle belongs to the other application and must not be destroyed by us
         private static IntPtr GetClassIcon(IntPtr hwnd)
         {
             foreach (int iconType in new[] { GCLP_HICON, GCLP_HICONSM })
@@ -96,9 +102,7 @@ namespace CaptureGraphicsWin2D
                     return hIcon;
                 }
             }
-
-            // e.g. context menus and most windows of the shell have no icon
-            return LoadIcon(IntPtr.Zero, (IntPtr)IDI_APPLICATION);
+            return IntPtr.Zero;
         }
 
         // Returns the ID that identifies the app of the window for the taskbar (e.g. Microsoft.WindowsStore_8wekyb3d8bbwe!App), or null.
@@ -154,20 +158,27 @@ namespace CaptureGraphicsWin2D
                 return null;
             }
 
-            // The bitmap belongs to us. Its pixels are BGRA with premultiplied alpha already, i.e. only the row order may need to be changed.
+            // The bitmap belongs to us
             var pixels = new byte[ICON_SIZE * ICON_SIZE * 4];
             var format = CreateIconFormat();
 
             IntPtr hdc = CreateCompatibleDC(IntPtr.Zero);
             try
             {
-                return GetDIBits(hdc, hBitmap, 0, ICON_SIZE, pixels, ref format, DIB_RGB_COLORS) == ICON_SIZE ? pixels : null;
+                if (GetDIBits(hdc, hBitmap, 0, ICON_SIZE, pixels, ref format, DIB_RGB_COLORS) != ICON_SIZE)
+                {
+                    return null;
+                }
             }
             finally
             {
                 DeleteDC(hdc);
                 DeleteObject(hBitmap);
             }
+
+            MakeOpaqueIfNoAlphaChannel(pixels);
+            PremultiplyIfStraightAlpha(pixels);
+            return pixels;
         }
 
         // Draws the icon and returns the pixels
@@ -192,6 +203,9 @@ namespace CaptureGraphicsWin2D
                 DeleteObject(hBitmap);
                 DeleteDC(hdc);
             }
+
+            // DrawIconEx already premultiplies the colors with the alpha channel
+            MakeOpaqueIfNoAlphaChannel(pixels);
             return pixels;
         }
 
@@ -219,6 +233,32 @@ namespace CaptureGraphicsWin2D
                 {
                     pixels[i + 3] = 255;
                 }
+            }
+        }
+
+        // The shell may return straight alpha (e.g. for the icon of Google Chrome), which would make semi-transparent pixels too bright.
+        // With premultiplied alpha, no color value can be greater than the alpha value, so a single greater color value means straight alpha.
+        private static void PremultiplyIfStraightAlpha(byte[] pixels)
+        {
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                byte alpha = pixels[i + 3];
+                if (pixels[i] > alpha || pixels[i + 1] > alpha || pixels[i + 2] > alpha)
+                {
+                    Premultiply(pixels);
+                    return;
+                }
+            }
+        }
+
+        private static void Premultiply(byte[] pixels)
+        {
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                int alpha = pixels[i + 3];
+                pixels[i] = (byte)((pixels[i] * alpha + 127) / 255);
+                pixels[i + 1] = (byte)((pixels[i + 1] * alpha + 127) / 255);
+                pixels[i + 2] = (byte)((pixels[i + 2] * alpha + 127) / 255);
             }
         }
     }
