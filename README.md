@@ -26,7 +26,7 @@ CaptureGraphicsWin2D "C:\Captures"
 ```
 e.g. capture a given window
 ```bash
-CaptureGraphicsWin2D "C:\Captures" "Shell_TrayWnd"
+CaptureGraphicsWin2D "C:\Captures" "*PowerShell*"
 ```
 
 
