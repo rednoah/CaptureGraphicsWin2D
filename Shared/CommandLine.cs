@@ -1,6 +1,9 @@
 using System;
+using System.Globalization;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static CaptureGraphicsWin2D.NativeMethods;
 
 namespace CaptureGraphicsWin2D
@@ -28,7 +31,7 @@ namespace CaptureGraphicsWin2D
                 // Offload actual capture to background (same as the GUI)
                 var capturedFiles = await Task.Run(() =>
                 {
-                    var windows = WindowInfo.GetVisibleWindows().Where(win => targetWindows.Length == 0 || targetWindows.Any(win.Matches));
+                    var windows = WindowInfo.GetVisibleWindows().Where(window => targetWindows.Length == 0 || targetWindows.Any(target => Matches(target, window)));
                     return WindowCapture.CaptureWindowsAsync(windows, outputDir, overwrite: true);
                 });
 
@@ -42,5 +45,29 @@ namespace CaptureGraphicsWin2D
                 return 1;
             }
         }
+
+
+        /// <summary>
+        /// True if the given text is the name or the handle of this window.
+        /// </summary>
+        private static bool Matches(string target, WindowInfo window)
+        {
+            // check for an exact match first, so that a name with a backslash (escape character of the pattern) still matches itself
+            return target == window.Name || FileSystemName.MatchesSimpleExpression(target, window.Name) || (TryParseId(target, out IntPtr hwnd) && hwnd == window.Hwnd);
+        }
+
+        /// <summary>
+        /// Parses a window handle in hexadecimal (e.g. 0x000A0B2C) or decimal (e.g. 658220) notation.
+        /// </summary>
+        private static bool TryParseId(string text, out IntPtr hwnd)
+        {
+            if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                return IntPtr.TryParse(text.Substring(2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out hwnd);
+            }
+            return IntPtr.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out hwnd);
+        }
+
+
     }
 }

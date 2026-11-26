@@ -25,26 +25,6 @@ namespace CaptureGraphicsWin2D
         public string Description => $"{Name}\nClass: {ClassName}\nHandle: {Id}";
 
         /// <summary>
-        /// True if the given text is the name or the handle of this window.
-        /// </summary>
-        public bool Matches(string text)
-        {
-            return text == Name || (TryParseId(text, out IntPtr hwnd) && hwnd == Hwnd);
-        }
-
-        /// <summary>
-        /// Parses a window handle in hexadecimal (e.g. 0x000A0B2C) or decimal (e.g. 658220) notation.
-        /// </summary>
-        public static bool TryParseId(string text, out IntPtr hwnd)
-        {
-            if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-            {
-                return IntPtr.TryParse(text.Substring(2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out hwnd);
-            }
-            return IntPtr.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out hwnd);
-        }
-
-        /// <summary>
         /// All visible top-level windows, topmost window first.
         /// </summary>
         public static List<WindowInfo> GetVisibleWindows()
