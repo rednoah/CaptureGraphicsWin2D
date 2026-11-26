@@ -59,7 +59,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0" Source="{x:Bind Icon}" Width="16" Height="16" VerticalAlignment="Center" />
                                     <FontIcon Grid.Column="0" Glyph="{x:Bind Glyph}" Width="16" Height="16" FontSize="16" />
-                                    <TextBlock Grid.Column="1" Text="{x:Bind Name}" MaxWidth="320" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Name}" MaxWidth="320" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 </Grid>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
