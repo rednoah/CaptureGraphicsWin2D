@@ -50,15 +50,25 @@ namespace CaptureGraphicsWin2D
         public static List<WindowInfo> GetVisibleWindows()
         {
             var windows = new List<WindowInfo>();
-            EnumWindows((hwnd, lParam) =>
+
+            // EnumWindows skips the windows of apps that are not desktop apps (e.g. toast notifications of the shell), but FindWindowEx does not
+            for (IntPtr hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, null, null); hwnd != IntPtr.Zero; hwnd = FindWindowEx(IntPtr.Zero, hwnd, null, null))
             {
-                if (IsWindowVisible(hwnd) && !IsWindowCloaked(hwnd))
+                if (IsWindowVisible(hwnd) && !IsWindowCloaked(hwnd) && HasWindowBounds(hwnd))
                 {
                     windows.Add(new WindowInfo(hwnd, GetClassName(hwnd), GetWindowText(hwnd)));
                 }
-                return true;
-            }, IntPtr.Zero);
+            }
             return windows;
+        }
+
+        /// <summary>
+        /// Internal windows of the shell may have zero size (all bounds 0)
+        /// </summary>
+        private static bool HasWindowBounds(IntPtr hwnd)
+        {
+            RECT bounds = GetWindowBounds(hwnd);
+            return bounds.Right > bounds.Left && bounds.Bottom > bounds.Top;
         }
 
         /// <summary>

@@ -38,7 +38,6 @@ namespace CaptureGraphicsWin2D
             { "Shell_TrayWnd", "\uE90E" },          // taskbar
             { "Shell_SecondaryTrayWnd", "\uE90E" }, // taskbar on additional monitors
             { "Pop-upHost", "\uE9A4" },             // context menus
-            { "NarratorHelperWindow", "\uED4D" },   // narrator helper
         };
 
         private CancellationTokenSource? _cts;
