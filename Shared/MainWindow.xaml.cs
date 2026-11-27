@@ -47,18 +47,16 @@ namespace CaptureGraphicsWin2D
 
         public MainWindow()
         {
-            this.InitializeComponent();
-
-            var appWindow = this.AppWindow;
+            InitializeComponent();
 
             // Dark title bar to match the dark content.
             if (Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported())
             {
-                this.AppWindow.TitleBar.PreferredTheme = Microsoft.UI.Windowing.TitleBarTheme.Dark;
+                AppWindow.TitleBar.PreferredTheme = Microsoft.UI.Windowing.TitleBarTheme.Dark;
             }
 
             // Initialize with the expected size (at Scale Factor 1 so the size will increase on Scale Factor 2)
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(430, 420));
+            AppWindow.Resize(new Windows.Graphics.SizeInt32(430, 420));
 
             // Shrink window size to fit the simple controls
             // The Window itself doesn't have a 'Loaded' event,
@@ -87,6 +85,8 @@ namespace CaptureGraphicsWin2D
                 Settings.Save(Settings.COUNTDOWN, (int)CountdownNumberBox.Value);
 
                 CancelCapture();
+
+                AppWindow.Hide();
                 Environment.Exit(0);
             };
 
