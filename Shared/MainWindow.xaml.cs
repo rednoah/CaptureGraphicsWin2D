@@ -68,9 +68,6 @@ namespace CaptureGraphicsWin2D
                 root.Loaded += (s, e) => Pack();
             }
 
-            // Set default folder
-            OutputFolderTextBox.Text = GetDefaultFolder();
-
             // Set default selected window (the list of windows is loaded when needed)
             WindowSelector.ItemsSource = new List<WindowItem> { SELECT_ALL_WINDOWS };
             WindowSelector.SelectedItem = SELECT_ALL_WINDOWS;
@@ -79,9 +76,16 @@ namespace CaptureGraphicsWin2D
             WindowPicker.PickChanged += WindowPicker_Picked;
             WindowPicker.PickCompleted += WindowPicker_Picked;
 
+            // Restore the settings of the last session (if they are still valid)
+            Settings.RestoreDirectory(Settings.OUTPUT_FOLDER, folder => OutputFolderTextBox.Text = folder, GetDefaultOutputFolder());
+            Settings.RestoreInteger(Settings.COUNTDOWN, seconds => CountdownNumberBox.Value = seconds, 3);
+
             // Ensure background tasks die when the window is closed
             this.Closed += (s, e) =>
             {
+                Settings.Save(Settings.OUTPUT_FOLDER, OutputFolderTextBox.Text);
+                Settings.Save(Settings.COUNTDOWN, (int)CountdownNumberBox.Value);
+
                 CancelCapture();
                 Environment.Exit(0);
             };
@@ -91,7 +95,7 @@ namespace CaptureGraphicsWin2D
         }
 
 
-        private string GetDefaultFolder()
+        private string GetDefaultOutputFolder()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Captures");
         }
