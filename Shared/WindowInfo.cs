@@ -22,7 +22,19 @@ namespace CaptureGraphicsWin2D
         /// </summary>
         public string Id => "0x" + Hwnd.ToString("X8");
 
-        public string Description => $"{Name}\nClass: {ClassName}\nHandle: {Id}";
+        /// <summary>
+        /// The current size of the window on screen in pixels (e.g. 600x400).
+        /// </summary>
+        public string Size
+        {
+            get
+            {
+                RECT bounds = GetWindowBounds(Hwnd);
+                return $"{bounds.Right - bounds.Left}x{bounds.Bottom - bounds.Top}";
+            }
+        }
+
+        public string Description => $"{Name}\nClass: {ClassName}\nHandle: {Id}\nSize: {Size}";
 
         /// <summary>
         /// All visible top-level windows, topmost window first.
